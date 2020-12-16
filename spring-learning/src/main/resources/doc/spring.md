@@ -101,7 +101,7 @@
 
 1. IOC概率和原理
 
-   - 什么是IOC?
+   - 什么是IOC ?
 
    > 控制反转，把对象创建和对象之间的调用过程，交给spring管理
    >
@@ -111,9 +111,42 @@
 
    > 主要使用了xml解析、工厂模式、反射
 
-   - 
+   - IOC过程
+
+     - 第一步 xml配置文件，配置要创建的对象
+
+     ```xml
+     <!--配置User对象创建-->
+     <bean id="user" class="com.yang.spring5.User"></bean>
+     ```
+
+     - 第二步 创建工厂类，通过xml解析，获取class属性值，再通过反射创建对象
+
+     
 
 2. IOC接口（BeanFactory）
+
+   - IOC思想是基于IOC容器完成的，IOC容器的底层就是对象工厂
+
+   - Spring提供IOC容器实现的两种方式
+
+     - BeanFactory：IOC容器基本实现，Spring内部使用接口，不提供开发人员使用
+
+     > 加载配置文件的时候不会创建对象，获取对象的时候才会去创建对象
+
+     - ApplicationCpntext：BeanFactory的子接口，功能更加强大，一般由开发人员使用
+
+     > 加载配置文件的时候就会把配置文件中的对象进行创建
+     >
+     > ```java
+     > 加载配置文件的两个实现类
+     > - ClassPathXmlApplicationContext
+     > - FileSystemXmlApplicationContext
+     > 
+     > 这两个实现类的区别
+     > ApplicationContext context = new ClassPathXmlApplicationContext("bean1.xml");//类路径
+     > ApplicationContext context = new FileSystemXmlApplicationContext("D:\\Java_learning\\spring-learning\\src\\main\\resources\\bean1.xml");//绝对路径
+     > ```
 
 3. IOC操作Bean管理（基于xml）
 
