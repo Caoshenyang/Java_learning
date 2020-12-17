@@ -5,4 +5,17 @@
 
     <!--配置User对象创建-->
     <bean id="user" class="com.yang.spring5.User"></bean>
+
+    <!--配置Book对象创建-->
+    <bean id="book" class="com.yang.spring5.Book">
+        <!--使用property完成属性注入-->
+        <property name="name" value="语文"></property>
+    </bean>
+
+    <!--配置Orders对象创建-->
+    <bean id="orders" class="com.yang.spring5.Orders">
+        <!--使用 constructor-arg 完成属性注入-->
+        <constructor-arg name="name" value="销售订单"/>
+    </bean>
+
 </beans>

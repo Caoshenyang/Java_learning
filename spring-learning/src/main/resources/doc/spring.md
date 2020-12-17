@@ -148,6 +148,146 @@
      > ApplicationContext context = new FileSystemXmlApplicationContext("D:\\Java_learning\\spring-learning\\src\\main\\resources\\bean1.xml");//绝对路径
      > ```
 
-3. IOC操作Bean管理（基于xml）
+3. 什么是Bean管理？
 
-4. IOC操作Bean管理（基于注解）
+   > Bean管理实际上是指两个操作
+   >
+   > 1. Spring创建对象
+   > 2. Spring注入属性
+
+4. IOC操作Bean管理（基于xml）
+
+   - 在Spring配置文件中，使用bean标签，标签里添加对应属性，就可以实现对象创建。
+
+   ```xml
+   <!--配置User对象创建-->
+   <bean id="user" class="com.yang.spring5.User"></bean>
+   ```
+
+   - bean标签中常用属性
+
+     - id：唯一标识
+     - class：类全路径
+     - name：类似与id属性，区别是name可以加特殊标识，如 “/” 等。
+
+   - 创建对象的时候，默认执行无参构造方法，完成对象创建。
+
+   - 属性注入（DI）
+
+     - 第一种：使用set方法注入。
+
+     > 1. 创建类，定义属性和它的set方法
+     >
+     > ```java
+     > /**
+     >  * @Author: csy
+     >  * @Date: 2020/12/17 20:38
+     >  * @Description: 使用set方法进行属性注入
+     >  */
+     > public class Book {
+     > 
+     >     private String name;
+     > 
+     >     public void setName(String name) {
+     >         this.name = name;
+     >     }
+     >     
+     >     public void show() {
+     >         System.out.println("name：" + name);
+     >     }
+     > }
+     > ```
+     >
+     > 2. 在spring配置文件中，配置对象创建和属性注入
+     >
+     > ```xml
+     > <!--配置Book对象创建-->
+     > <bean id="book" class="com.yang.spring5.Book">
+     >     <!--使用property完成属性注入-->
+     >     <property name="name" value="语文"></property>
+     > </bean>
+     > ```
+     >
+     > 3. 测试
+     >
+     > ```java
+     > public class Spring5Test {
+     > 
+     >     @Test
+     >     public void testAdd() {
+     >         //1 加载spring配置文件
+     >         ApplicationContext context = new ClassPathXmlApplicationContext("bean1.xml");
+     >         //2 获取配置创建的对象
+     >         Book book = context.getBean("book", Book.class);
+     >         book.show();
+     >     }
+     > }
+     > ```
+     >
+     > 4. 输出
+     >
+     > ```java
+     > name：语文
+     > ```
+     >
+     > 
+
+     - 第二种：使用有参构造方法注入。
+
+     > 1. 创建类，定义属性和有参构造方法。
+     >
+     > ```java
+     > /**
+     >  * @Author: csy
+     >  * @Date: 2020/12/17 21:15
+     >  * @Description: 使用有参构造方法注入
+     >  */
+     > public class Orders {
+     > 
+     >     private String name;
+     > 
+     >     public Orders(String name) {
+     >         this.name = name;
+     >     }
+     > 
+     >     public void show(){
+     >         System.out.println("name："+ name);
+     >     }
+     > }
+     > ```
+     >
+     > 2. 在Spring配置文件中，配置对象创建和属性注入
+     >
+     > ```xml
+     > <!--配置Orders对象创建-->
+     > <bean id="orders" class="com.yang.spring5.Orders">
+     >     <!--使用 constructor-arg 完成属性注入-->
+     >     <constructor-arg name="name" value="销售订单"/>
+     > </bean>
+     > ```
+     >
+     > 3. 测试
+     >
+     > ```java
+     > public class Spring5Test {
+     > 
+     >     @Test
+     >     public void testAdd() {
+     >         //1 加载spring配置文件
+     >         ApplicationContext context = new ClassPathXmlApplicationContext("bean1.xml");
+     >         //2 获取配置创建的对象
+     >         Orders orders = context.getBean("orders", Orders.class);
+     >         orders.show();
+     >     }
+     > }
+     > ```
+     >
+     > 4. 结果
+     >
+     > ```java
+     > name：销售订单
+     > ```
+     >
+     > 
+
+5. IOC操作Bean管理（基于注解）
