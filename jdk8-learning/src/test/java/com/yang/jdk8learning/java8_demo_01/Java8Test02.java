@@ -19,8 +19,8 @@ class Java8Test02 {
 
     }
 
-   public static String myShow02(MyShow02<String> myShow02,String s){
+    public static String myShow02(MyShow02<String> myShow02, String s) {
         return myShow02.getShow(s);
-   }
+    }
 
 }

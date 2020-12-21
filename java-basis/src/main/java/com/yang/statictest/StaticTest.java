@@ -7,7 +7,7 @@ public class StaticTest {
         Demo demo = new Demo();
         System.out.println(a);
         System.out.println(b);
-        System.out.println( demo.a);
+        System.out.println(demo.a);
 
     }
 }

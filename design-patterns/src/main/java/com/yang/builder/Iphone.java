@@ -11,6 +11,7 @@ public class Iphone {
     private Battery battery;
     //显示屏
     private Screen screen;
+
     //显示产品特性
     public void show() {
         battery.print();

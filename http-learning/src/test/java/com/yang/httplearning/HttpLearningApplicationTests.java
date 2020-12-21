@@ -1,14 +1,13 @@
-package com.yang.jdk8learning;
+package com.yang.httplearning;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Jdk8LearningApplicationTests {
+class HttpLearningApplicationTests {
 
     @Test
     void contextLoads() {
     }
-
 
 }

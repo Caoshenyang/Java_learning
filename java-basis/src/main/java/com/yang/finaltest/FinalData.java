@@ -2,6 +2,7 @@ package com.yang.finaltest;
 
 // reuse/FinalData.java
 // The effect of final on fields
+
 import java.util.*;
 
 class Value {
@@ -19,6 +20,7 @@ public class FinalData {
     public FinalData(String id) {
         this.id = id;
     }
+
     // Can be compile-time constants:
     private final int valueOne = 9;
     private static final int VALUE_TWO = 99;
