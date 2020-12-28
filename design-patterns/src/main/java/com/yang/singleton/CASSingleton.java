@@ -11,7 +11,7 @@ public class CASSingleton {
     public static CASSingleton getInstance() {
         for (; ; ) {
             CASSingleton singleton = INSTANCE.get();
-            if (singleton != null ) {
+            if (singleton != null) {
                 return singleton;
             }
             singleton = new CASSingleton();

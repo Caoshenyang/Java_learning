@@ -28,12 +28,14 @@ class Java8Test01 {
         TreeSet<String> t = new TreeSet<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return Integer.compare(o1.length(),o2.length());
+                return Integer.compare(o1.length(), o2.length());
             }
         });
 
         //Lambda 表达式作为参数传递
-        TreeSet<String> t2 = new TreeSet<>((o1, o2) -> {return Integer.compare(o1.length(), o2.length());});
+        TreeSet<String> t2 = new TreeSet<>((o1, o2) -> {
+            return Integer.compare(o1.length(), o2.length());
+        });
 
         //System.out.println(comparator);
 

@@ -8,7 +8,7 @@ public class FinalTest {
     }
 }
 
-class Test{
+class Test {
     public static void main(String[] args) {
         FinalTest finalTest = new FinalTest(1);
     }

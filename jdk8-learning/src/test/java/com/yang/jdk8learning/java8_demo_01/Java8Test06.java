@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.Date;
 
-class Java8Test06 implements TestInterface01,TestInterface02 {
+class Java8Test06 implements TestInterface01, TestInterface02 {
 
     public static void main(String[] args) {
         /**
