@@ -287,7 +287,144 @@
      > ```java
      > name：销售订单
      > ```
+
+     - 第三种：P名称空间注入
+
+       **使用P名称空间注入，可以简化基于XML配置方式**
+
+     >1. 在配置文件中添加P名称空间
      >
+     >```xml
+     > xmlns:p="http://www.springframework.org/schema/p"
+     >```
+     >
+     >2. 配置对象创建和属性注入
+     >
+     >```xml
+     ><?xml version="1.0" encoding="UTF-8"?>
+     ><beans xmlns="http://www.springframework.org/schema/beans"
+     >       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     >       xmlns:p="http://www.springframework.org/schema/p"
+     >       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+     >
+     >    <!--使用P标签注入-->
+     >    <bean id="book" class="com.yang.spring5.Book" p:name="数学">
+     >    </bean>
+     >
+     ></beans>
+     >```
+
+   - 特殊类型值注入
+
+     - null 
+
+     > ```xml
+     > <!--通过<null></null>标签注入-->
+     > <!--配置Book对象创建-->
+     > <bean id="book" class="com.yang.spring5.Book">
+     >     <!--使用property完成属性注入-->
+     >     <property name="name">
+     >         <null></null>
+     >     </property>
+     > </bean>
+     > ```
+
+     - 特殊符号
+
+     ```xml
+     <!--1.把特殊符号转义-->
+     <!--2.把带特殊符号的内容写到CDATA中-->
+     <!--配置Book对象创建-->
+     <bean id="book" class="com.yang.spring5.Book">
+         <!--使用property完成属性注入-->
+         <property name="name">
+             <value><![CDATA[<<语文>>]]></value>
+         </property>
+     </bean>
+     ```
+
+   - 注入属性-外部bean
+
+     > 场景：service类中引用dao类
+     >
+     > 代码示例：
+     >
+     > 1. 创建两个类，service类和dao类
+     > 2. 在service类中调用dao里的方法
+     > 3. 在spring配置文件中进行配置
+     >
+     > ```java
+     > public class UserService {
      > 
+     >     /**
+     >      * 创建UserDao类型属性，生成set方法
+     >      */
+     >     private UserDao userDao;
+     > 
+     >     public void setUserDao(UserDao userDao) {
+     >         this.userDao = userDao;
+     >     }
+     > 
+     >     public void add() {
+     >         System.out.println("service add....");
+     >         userDao.update();
+     >     }
+     > }
+     > ```
+     >
+     > ```java
+     > public interface UserDao {
+     >     public void update();
+     > }
+     > ```
+     >
+     > ```java
+     > public class UserDaoImpl implements UserDao {
+     > 
+     >     @Override
+     >     public void update() {
+     >         System.out.println("dao update....");
+     >     }
+     > }
+     > ```
+     >
+     > ```xml
+     > <?xml version="1.0" encoding="UTF-8"?>
+     > <beans xmlns="http://www.springframework.org/schema/beans"
+     >        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     >        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+     > 
+     >     <bean id="userService" class="com.yang.spring5.service.UserService">
+     >         <!--  注入userDao对象    -->
+     >         <!--  name属性：类里的属性名称   -->
+     >         <!--  ref属性：创建userDao对象bean标签id值 -->
+     >         <property name="userDao" ref="userDao"></property>
+     >     </bean>
+     >     <bean id="userDao" class="com.yang.spring5.dao.UserDaoImpl"></bean>
+     > </beans>
+     > ```
+     >
+     > ```java
+     > public class Spring5Test2 {
+     > 
+     >     @Test
+     >     public void testAdd() {
+     >         //1 加载spring配置文件
+     >         ApplicationContext context = new ClassPathXmlApplicationContext("bean2.xml");
+     >         //2 获取配置创建的对象
+     >         UserService userService = context.getBean("userService", UserService.class);
+     >         userService.add();
+     >     }
+     > 
+     > }
+     > ```
+
+   
+
+   
+
+   - 注入属性-内部bean和级联赋值
+
+     
 
 5. IOC操作Bean管理（基于注解）

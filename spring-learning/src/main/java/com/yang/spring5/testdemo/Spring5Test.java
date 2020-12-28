@@ -27,5 +27,6 @@ public class Spring5Test {
 
         System.out.println(orders);
         orders.show();
+        book.show();
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--配置User对象创建-->
@@ -9,8 +10,12 @@
     <!--配置Book对象创建-->
     <bean id="book" class="com.yang.spring5.Book">
         <!--使用property完成属性注入-->
-        <property name="name" value="语文"></property>
+        <property name="name">
+            <value><![CDATA[<<语文>>]]></value>
+        </property>
     </bean>
+<!--    <bean id="book" class="com.yang.spring5.Book" p:name="数学">-->
+<!--    </bean>-->
 
     <!--配置Orders对象创建-->
     <bean id="orders" class="com.yang.spring5.Orders">
