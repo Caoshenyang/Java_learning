@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="student" class="com.yang.spring5.bean.Student">
+        <property name="course">
+            <array>
+                <value>语文</value>
+                <value>数学</value>
+            </array>
+        </property>
+        <property name="lists">
+            <list>
+                <value>JAVA</value>
+                <value>C语言</value>
+            </list>
+        </property>
+        <property name="maps">
+            <map>
+                <entry key="1" value="MySql"/>
+                <entry key="2" value="Redis"/>
+            </map>
+        </property>
+        <property name="sets">
+            <set>
+                <value>C++</value>
+                <value>C#</value>
+            </set>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="emp" class="com.yang.spring5.bean.Emp">
+        <property name="name" value="张三"></property>
+        <property name="gender" value="男"></property>
+        <!--内部bean注入-->
+        <!--当然也可以采用外部bean的方式来实现 1.外部创建dept的bean 2.内部通过ref标签引用-->
+        <property name="dept" >
+            <bean id="dept" class="com.yang.spring5.bean.Dept">
+                <property name="name" value="IT部门"></property>
+            </bean>
+        </property>
+    </bean>
+</beans>
