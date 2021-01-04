@@ -1,5 +1,7 @@
 # Spring学习
 
+[TOC]
+
 ## 一、Spring框架概述
 
 1. Spring 是轻量级的开源JavaEE 框架
@@ -1154,7 +1156,7 @@ bean作用域是用来确定从Spring容器中返回哪种类型的bean实例给
 > prop.password=root
 > ```
 >
-> ```xml
+> ```?xml
 > <?xml version="1.0" encoding="UTF-8"?>
 > <beans xmlns="http://www.springframework.org/schema/beans"
 >        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
