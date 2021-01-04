@@ -148,6 +148,8 @@
   > ApplicationContext context = new FileSystemXmlApplicationContext("D:\\Java_learning\\spring-learning\\src\\main\\resources\\bean1.xml");//绝对路径
   > ```
 
+### 3. Bean管理
+
 #### 什么是Bean管理？
 
 > Bean管理实际上是指两个操作
@@ -930,17 +932,246 @@
   > ```java
   > Course{name='JAVA'}
   > ```
-  
-  
-  
-  
-  
-  
 
+#### IOC操作Bean管理（基于注解）
 
+### 4. Bean的作用域
 
+bean作用域是用来确定从Spring容器中返回哪种类型的bean实例给调用者。
 
+> 1. spring里配置的bean是单例还是多实例的？
+>
+>    默认为单例，可进行配置  使用 **scope** 标签， **prototype** 多实例 、 **singleton** 单例 (默认)
+>
+>    ```xml
+>    <--多实例-->
+>    <bean id="user" class="com.yang.spring5.User" scope="prototype"></bean>
+>    <--单例-->
+>    <bean id="user" class="com.yang.spring5.User" scope="singleton "></bean>
+>    ```
+>
+> 2. **scope**设置**prototype** 和**singleton** 的区别？
+>
+>    1. **singleton** 单例  **prototype** 多实例
+>    2. **singleton** bean在配置加载的时候进行创建，**prototype** bean在调用getBean方法的时候创建
 
+### 5. Bean的生命周期
 
+> 从对象创建到对象销毁的过程（5步）
+>
+> 1. 通过构造器创建 bean 实例（无参数构造）
+>
+> 2. 为 bean 的属性设置值和对其他 bean 引用（调用 set 方法）
+>
+> 3. 调用 bean 的初始化的方法（需要进行配置初始化的方法，调用init方法）
+>
+> 4. bean 可以使用了（对象获取到了，调用getBean方法）
+>
+> 5. 当容器关闭时候，调用 bean 的销毁的方法（需要进行配置销毁的方法，调用destroy方法）
+>
+> 代码示例
+>
+> ```java
+> package com.yang.spring5.bean;
+> 
+> /**
+>  * @Description: 订单
+>  * @author: caoshenyang
+>  * @date: 2021.01.04
+>  */
+> public class Order {
+>     private String name;
+> 
+>     public Order() {
+>         System.out.println("第一步 执行无参构造方法创建 bean 实例");
+>     }
+> 
+>     public void setName(String name) {
+>         this.name = name;
+>         System.out.println("第二步 调用setter方法设置属性值");
+>     }
+> 
+>     public void initMethod(){
+>         System.out.println("第三步 执行初始化方法");
+>     }
+> 
+>     public void destroyMethod(){
+>         System.out.println("第五步 执行销毁方法");
+>     }
+> }
+> ```
+>
+> ```xml
+> <?xml version="1.0" encoding="UTF-8"?>
+> <beans xmlns="http://www.springframework.org/schema/beans"
+>        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+> 
+>     <bean id="order" class="com.yang.spring5.bean.Order" init-method="initMethod" destroy-method="destroyMethod">
+>         <property name="name" value="手机"/>
+>     </bean>
+> </beans>
+> ```
+>
+> ```java
+> @Test
+> public void testAdd() {
+>     //1 加载spring配置文件
+>     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("bean9.xml");
+>     //2 获取配置创建的对象
+>     Order order = context.getBean("order", Order.class);
+>     System.out.println("第四步 获取创建bean实例对象");
+>     System.out.println(order);
+> 
+>     context.close();
+> }
+> ```
+>
+> 输出：
+>
+> ```java
+> 第一步 执行无参构造方法创建 bean 实例
+> 第二步 调用setter方法设置属性值
+> 第三步 执行初始化方法
+> 第四步 获取创建bean实例对象
+> com.yang.spring5.bean.Order@ed9d034
+> 第五步 执行销毁方法
+> ```
+>
+> 添加bean的后置处理器（bean的生命周期为7步）
+>
+> 1. 创建后置处理器类，需要实现BeanPostProcessor接口
+> 2. 配置后置处理器
+>
+> ```java
+> package com.yang.spring5.bean;
+> 
+> import org.springframework.beans.BeansException;
+> import org.springframework.beans.factory.config.BeanPostProcessor;
+> 
+> /**
+>  * @Description: 后置处理器
+>  * @author: caoshenyang
+>  * @date: 2021.01.04
+>  */
+> public class MyBeanPostProcessor implements BeanPostProcessor {
+> 
+>     @Override
+>     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+>         System.out.println("在初始化之前执行的方法");
+>         return bean;
+>     }
+> 
+>     @Override
+>     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+>         System.out.println("在初始化之后执行的方法");
+>         return bean;
+>     }
+> }
+> ```
+>
+> ```xml
+> <?xml version="1.0" encoding="UTF-8"?>
+> <beans xmlns="http://www.springframework.org/schema/beans"
+>        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+> 
+>     <bean id="order" class="com.yang.spring5.bean.Order" init-method="initMethod" destroy-method="destroyMethod">
+>         <property name="name" value="手机"/>
+>     </bean>
+>     <!--配置后置处理器-->
+>     <bean id="myBeanPostProcessor" class="com.yang.spring5.bean.MyBeanPostProcessor"></bean>
+> </beans>
+> ```
+>
+> ```java
+> @Test
+> public void testAdd() {
+>     //1 加载spring配置文件
+>     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("bean9.xml");
+>     //2 获取配置创建的对象
+>     Order order = context.getBean("order", Order.class);
+>     System.out.println("第四步 获取创建bean实例对象");
+>     System.out.println(order);
+> 
+>     context.close();
+> }
+> ```
+>
+> 输出：
+>
+> ```java
+> 第一步 执行无参构造方法创建 bean 实例
+> 第二步 调用setter方法设置属性值
+> 在初始化之前执行的方法
+> 第三步 执行初始化方法
+> 在初始化之后执行的方法
+> 第四步 获取创建bean实例对象
+> com.yang.spring5.bean.Order@4eb7f003
+> 第五步 执行销毁方法
+> ```
 
-1. IOC操作Bean管理（基于注解）
+### 6. 引入外部属性文件
+
+> 下面以配置数据库连接作为示例。
+
+- 方式一：直接配置数据库信息
+
+>1. 引入Druid连接池依赖
+>2. 配置连接池
+>
+>```xml
+><!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+><dependency>
+>    <groupId>com.alibaba</groupId>
+>    <artifactId>druid</artifactId>
+>    <version>1.2.4</version>
+></dependency>
+>```
+>
+>```xml
+><!--直接配置连接池-->
+><bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+>    <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+>    <property name="url" value="jdbc:mysql://localhost:3306/userDb"></property>
+>    <property name="username" value="root"></property>
+>    <property name="password" value="root"></property>
+></bean>
+>```
+
+- 方式二：引入外部属性文件配置数据库连接池
+
+> 1. 创建外部属性文件，properties类型文件（jdbc.properties）
+> 2. 写数据库信息
+> 3. 引入到Spring配置文件中
+>    1. 设置context名称空间
+>    2. 引入数据
+>
+> ```properties
+> prop.driverClass=com.mysql.jdbc.Driver
+> prop.url=jdbc:mysql://localhost:3306/userDb
+> prop.userName=root
+> prop.password=root
+> ```
+>
+> ```xml
+> <?xml version="1.0" encoding="UTF-8"?>
+> <beans xmlns="http://www.springframework.org/schema/beans"
+>        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>        xmlns:context="http://www.springframework.org/schema/context"
+>        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+> http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+> 
+>     <!--引入外部属性文件-->
+>     <context:property-placeholder location="classpath:jdbc.properties"/>
+> 
+>     <!--配置连接池-->
+>     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+>         <property name="driverClassName" value="${prop.driverClass}"></property>
+>         <property name="url" value="${prop.url}"></property>
+>         <property name="username" value="${prop.userName}"></property>
+>         <property name="password" value="${prop.password}"></property>
+>     </bean>
+> </beans>
+> ```
+
