@@ -937,6 +937,191 @@
 
 #### IOC操作Bean管理（基于注解）
 
+> 1. 什么是注解
+>
+>     （1）注解是代码特殊标记，格式：@注解名称(属性名称=属性值, 属性名称=属性值…)
+>
+>     （2）使用注解，注解作用在类上面，方法上面，属性上面
+>
+>     （3）使用注解目的：简化 xml 配置
+>
+> 2. Spring针对Bean管理提供的注解（下面四个注解功能一样，都可以用来创建实例）
+>
+>     （1）@Component
+>
+>     （2）@Service
+>
+>     （3）@Controller
+>
+>     （4）@Repository
+>
+> 3. 基于注解方式实现对象创建
+>
+>    （1）引入AOP依赖
+>
+>    ```xml
+>    <dependency>
+>        <groupId>org.springframework</groupId>
+>        <artifactId>spring-aop</artifactId>
+>        <version>5.2.9.RELEASE</version>
+>    </dependency>
+>    ```
+>
+>    （2）开启注解扫描
+>
+>    ```xml
+>    <?xml version="1.0" encoding="UTF-8"?>
+>    <beans xmlns="http://www.springframework.org/schema/beans"
+>           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>           xmlns:context="http://www.springframework.org/schema/context"
+>           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+>    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+>    
+>        <!--开启注解扫描
+>            1.扫描多个包，多个包使用逗号隔开
+>            2.扫描包的上层目录
+>        -->
+>        <context:component-scan base-package="com.yang.spring5"></context:component-scan>
+>    </beans>
+>    ```
+>
+>    （3）创建类，加上注解
+>
+>    ```java
+>    //在注解里面 value 属性值可以省略不写，
+>    //默认值是类名称，首字母小写
+>    //StudentService -- studentService
+>    @Service(value = "studentService") //注解等同于XML配置文件：<bean id="studentService" class=".."/>
+>    public class StudentService {
+>        public void show() {
+>            System.out.println("service show ......");
+>        }
+>    }
+>    ```
+>
+>    测试：
+>
+>    ```java
+>    @Test
+>    public void testAdd() {
+>        //1 加载spring配置文件
+>        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("bean12.xml");
+>        //2 获取配置创建的对象
+>        StudentService studentService = context.getBean("studentService", StudentService.class);
+>        studentService.show();
+>    }
+>    ```
+>
+>    输出：
+>
+>    ```java
+>    service show ......
+>    ```
+>
+> 4. 开启组件扫描细节配置
+>
+> ```xml
+> <!--示例 1
+>      use-default-filters="false" 表示现在不使用默认 filter，自己配置 filter
+>      context:include-filter ，设置扫描哪些内容
+> -->
+> <context:component-scan base-package="com.yang.spring5" use-default-filters="false">
+>     <!--代表只扫描Controller注解的类-->
+>     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+> </context:component-scan>
+> <!--示例 2
+>  下面配置扫描包所有内容
+>  context:exclude-filter： 设置哪些内容不进行扫描
+> -->
+> <context:component-scan base-package="com.yang.spring5">
+>     <!--表示Controller注解的类之外一切都进行扫描-->
+>     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+> </context:component-scan>
+> ```
+>
+> 5. 基于注解方式实现属性注入
+>
+>    （1）@AutoWired：根据属性类型进行自动装配
+>
+>    ​	第一步 把 service 和 dao 对象创建，在 service 和 dao 类添加创建对象注解
+>
+>    ​	第二步 在 service 注入 dao 对象，在 service 类添加 dao 类型属性，在属性上面使用注解
+>
+>    ```java
+>    @Service
+>    public class UserService {
+>     //定义 dao 类型属性
+>     //不需要添加 set 方法
+>     //添加注入属性注解
+>     @Autowired
+>     private UserDao userDao;
+>     public void add() {
+>     System.out.println("service add.......");
+>     userDao.add();
+>     }
+>    }
+>    
+>    //Dao实现类
+>    @Repository
+>    public class UserDaoImpl implements UserDao {
+>        @Override
+>        public void add() {
+>            System.out.println("dao add.....");
+>        }
+>    }
+>    ```
+>
+>    （2）@Qualifier：根据属性名称进行注入，这个@Qualifier 注解的使用，和上面@Autowired 一起使用
+>
+>    ```java
+>    @Autowired
+>    //根据名称进行注入（目的在于区别同一接口下有多个实现类，根据类型就无法选择，从而出错！）
+>    @Qualifier(value = "userDaoImpl1") 
+>    private UserDao userDao;
+>    ```
+>
+>    （3）@Resource：可以根据类型注入，也可以根据名称注入
+>
+>    ```java
+>    //@Resource //根据类型进行注入
+>    @Resource(name = "userDaoImpl1") //根据名称进行注入
+>    private UserDao userDao;
+>    ```
+>
+>    （4）@Value：普通类型值注入
+>
+>    ```java
+>    @Value(value = "abc")
+>    private String name
+>    ```
+>
+> 6. 完全注解开发
+>
+>    （1）创建配置类，替换xml配置文件
+>
+>    ```java
+>    @Configuration //作为配置类，替代 xml 配置文件
+>    @ComponentScan(basePackages = {"com.yang.spring5"})
+>    public class SpringConfig {
+>        
+>    }
+>    ```
+>
+>    （2）编写测试类
+>
+>    ```java
+>    @Test
+>    public void testService2() {
+>     //加载配置类
+>     ApplicationContext context
+>     = new AnnotationConfigApplicationContext(SpringConfig.class);
+>     UserService userService = context.getBean("userService",
+>    UserService.class);
+>     System.out.println(userService);
+>     userService.add();
+>    }
+>    ```
+
 ### 4. Bean的作用域
 
 bean作用域是用来确定从Spring容器中返回哪种类型的bean实例给调用者。
@@ -1156,7 +1341,7 @@ bean作用域是用来确定从Spring容器中返回哪种类型的bean实例给
 > prop.password=root
 > ```
 >
-> ```?xml
+> ```xml
 > <?xml version="1.0" encoding="UTF-8"?>
 > <beans xmlns="http://www.springframework.org/schema/beans"
 >        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
