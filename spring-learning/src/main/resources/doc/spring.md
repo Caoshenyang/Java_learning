@@ -1362,3 +1362,4 @@ bean作用域是用来确定从Spring容器中返回哪种类型的bean实例给
 > </beans>
 > ```
 
+# AOP
